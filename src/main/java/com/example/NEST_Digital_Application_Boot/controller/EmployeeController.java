@@ -2,6 +2,7 @@ package com.example.NEST_Digital_Application_Boot.controller;
 
 import com.example.NEST_Digital_Application_Boot.DAO.EmployeeDoa;
 import com.example.NEST_Digital_Application_Boot.model.EmployeeModel;
+import com.example.NEST_Digital_Application_Boot.model.SecurityModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,6 +43,22 @@ public class EmployeeController {
         HashMap<String, String> map = new HashMap<>();
         map.put("status", "success");
         return map;
+    }
+    @CrossOrigin(origins = "*")
+    @PostMapping(path = "/employeeLogin",consumes = "application/json",produces = "application/json")
+    public  HashMap<String,String> securityLogin(@RequestBody EmployeeModel e){
+        HashMap<String,String> map=new HashMap<>();
+        List<EmployeeModel> details= (List<EmployeeModel>) edao.employeeLogin(e.getUsername(),e.getPassword());
+        if(details.size()==0){
+            map.put("status","failed");
+        }
+        else{
+            map.put("status","success");
+            String id = String.valueOf(details.get(0).getId());
+            map.put("userId",id);
+        }
+        return map;
+
     }
 
 

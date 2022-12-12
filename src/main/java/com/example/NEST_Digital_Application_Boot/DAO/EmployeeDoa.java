@@ -18,4 +18,7 @@ public interface EmployeeDoa extends CrudRepository<EmployeeModel,Integer> {
     @Transactional
     @Query(value="DELETE FROM `employee` WHERE `id`=:id",nativeQuery = true)
     void deleteEmployee(@Param("id") Integer id);
+
+    @Query(value = "SELECT `id`, `emp_designation`, `emp_email`, `emp_name`, `emp_phone`, `password`, `username` FROM `employee` WHERE `username`=:username  AND `password`=:password",nativeQuery = true)
+    List<EmployeeModel> employeeLogin(@Param("username")String username,@Param("password")String password);
 }
