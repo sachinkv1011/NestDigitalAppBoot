@@ -1,0 +1,50 @@
+package com.example.NEST_Digital_Application_Boot.controller;
+
+import com.example.NEST_Digital_Application_Boot.DAO.EmployeeDoa;
+import com.example.NEST_Digital_Application_Boot.model.EmployeeModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+
+@RestController
+public class EmployeeController {
+    @Autowired
+    private EmployeeDoa edao;
+
+
+    @CrossOrigin(origins = "*")
+    @PostMapping(path = "/addEmployee",consumes = "application/json",produces = "application/json")
+    public HashMap<String,String> addEmployee(@RequestBody EmployeeModel e){
+        HashMap<String,String> map=new HashMap<>();
+        edao.save(e);
+        map.put("status","success");
+        return map;
+    }
+    @CrossOrigin(origins="*")
+    @PostMapping(path = "/searchEmployee",consumes = "application/json",produces = "application/json")
+     List<EmployeeModel> searchEmployee(@RequestBody EmployeeModel e){
+        HashMap<String,String> map=new HashMap<>();
+        return (List<EmployeeModel>) edao.searchEmployee(e.getEmpName());
+
+    }
+    @CrossOrigin(origins = "*")
+    @GetMapping(path = "/viewAllEmployee")
+    List<EmployeeModel>  viewAllEmployee(@RequestBody EmployeeModel e){
+        return (List<EmployeeModel>) edao.findAll();
+    }
+    @CrossOrigin(origins = "*")
+    @PostMapping(path="/deleteEmployee",consumes = "application/json", produces = "application/json")
+    public HashMap<String, String> DeleteEmployee(@RequestBody EmployeeModel e) {
+        String id = String.valueOf(e.getId());
+        edao.deleteEmployee(e.getId());
+        HashMap<String, String> map = new HashMap<>();
+        map.put("status", "success");
+        return map;
+    }
+
+
+
+
+}
