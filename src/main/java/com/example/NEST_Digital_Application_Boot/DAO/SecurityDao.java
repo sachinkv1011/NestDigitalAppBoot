@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
@@ -21,4 +22,7 @@ public interface SecurityDao extends CrudRepository<SecurityModel,Integer> {
 
     @Query(value = "SELECT `id`, `address`, `name`, `password`, `username` FROM `security` WHERE `username`=:username  AND `password`=:password",nativeQuery = true)
     List<SecurityModel> securityLogin(@Param("username")String username,@Param("password") String password);
+
+    @Query(value = "SELECT `id`,`address`, `name`,`password`, `username` FROM `security` WHERE `id`= :id", nativeQuery = true)
+    List<SecurityModel> GetSecurityProfile(@Param("id") int id);
 }

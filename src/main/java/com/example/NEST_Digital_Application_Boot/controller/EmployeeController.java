@@ -1,11 +1,15 @@
 package com.example.NEST_Digital_Application_Boot.controller;
 
 import com.example.NEST_Digital_Application_Boot.DAO.EmployeeDoa;
+import com.example.NEST_Digital_Application_Boot.DAO.LeaveCheckDao;
 import com.example.NEST_Digital_Application_Boot.model.EmployeeModel;
+import com.example.NEST_Digital_Application_Boot.model.LeaveCheckModel;
 import com.example.NEST_Digital_Application_Boot.model.SecurityModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 
@@ -13,15 +17,36 @@ import java.util.List;
 public class EmployeeController {
     @Autowired
     private EmployeeDoa edao;
+    @Autowired
+    private LeaveCheckDao lcdao;
 
 
     @CrossOrigin(origins = "*")
-    @PostMapping(path = "/addEmployee",consumes = "application/json",produces = "application/json")
-    public HashMap<String,String> addEmployee(@RequestBody EmployeeModel e){
-        HashMap<String,String> map=new HashMap<>();
-        edao.save(e);
-        map.put("status","success");
-        return map;
+    @PostMapping(path = "/add", consumes = "application/json", produces = "application/json")
+    public HashMap<String,String> AddEmployee(@RequestBody EmployeeModel e){
+        List<EmployeeModel> emp = (List<EmployeeModel>) edao.UserLoginCred(e.getUsername(), e.getPassword(),e.getId());
+        HashMap<String, String> hashMap = new HashMap<>();
+//        edao.save(e);
+//        hashMap.put("status","success");
+
+
+        if(emp.size()==0){
+            LocalDateTime now = LocalDateTime.now();
+            edao.save(e);
+            List<EmployeeModel> result = (List<EmployeeModel>) edao.UserLoginDetailsById(String.valueOf(e.getId()));
+            LeaveCheckModel lc = new LeaveCheckModel();
+            lc.setEmpId(String.valueOf(result.get(0).getId()));
+            DateTimeFormatter d = DateTimeFormatter.ofPattern("yyyy");
+            lc.setYear(d.format(now));
+            lc.setCasualLeave(20);
+            lc.setSickLeave(7);
+            lc.setSpecialLeave(3);
+            lcdao.save(lc);
+            hashMap.put("status","success");
+        }else{
+            hashMap.put("status","failed");
+        }
+        return hashMap;
     }
     @CrossOrigin(origins="*")
     @PostMapping(path = "/searchEmployee",consumes = "application/json",produces = "application/json")
@@ -59,6 +84,10 @@ public class EmployeeController {
         }
         return map;
 
+    }
+    @PostMapping(path = "/employeeProfile", consumes = "application/json", produces = "application/json")
+    public List<EmployeeModel> getEmployeeProfile(@RequestBody EmployeeModel e) {
+        return (List<EmployeeModel>) edao.GetEmployeeProfile(e.getId());
     }
 
 
