@@ -33,7 +33,7 @@ public class SecurityController {
     }
     @CrossOrigin(origins = "*")
     @GetMapping(path = "/viewAllSecurity")
-    List<SecurityModel>  viewAllSecurity(@RequestBody SecurityModel s){
+    List<SecurityModel>  viewAllSecurity(){
         return (List<SecurityModel>) sdao.findAll();
     }
     @CrossOrigin(origins = "*")

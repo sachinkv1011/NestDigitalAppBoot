@@ -22,7 +22,7 @@ public class EmployeeController {
 
 
     @CrossOrigin(origins = "*")
-    @PostMapping(path = "/add", consumes = "application/json", produces = "application/json")
+    @PostMapping(path = "/addEmployee", consumes = "application/json", produces = "application/json")
     public HashMap<String,String> AddEmployee(@RequestBody EmployeeModel e){
         List<EmployeeModel> emp = (List<EmployeeModel>) edao.UserLoginCred(e.getUsername(), e.getPassword(),e.getId());
         HashMap<String, String> hashMap = new HashMap<>();
@@ -56,8 +56,8 @@ public class EmployeeController {
 
     }
     @CrossOrigin(origins = "*")
-    @GetMapping(path = "/viewAllEmployee")
-    List<EmployeeModel>  viewAllEmployee(@RequestBody EmployeeModel e){
+    @GetMapping( "/viewAllEmployee")
+    List<EmployeeModel>  viewAllEmployee(){
         return (List<EmployeeModel>) edao.findAll();
     }
     @CrossOrigin(origins = "*")
@@ -71,7 +71,7 @@ public class EmployeeController {
     }
     @CrossOrigin(origins = "*")
     @PostMapping(path = "/employeeLogin",consumes = "application/json",produces = "application/json")
-    public  HashMap<String,String> securityLogin(@RequestBody EmployeeModel e){
+    public  HashMap<String,String> employeeLogin(@RequestBody EmployeeModel e){
         HashMap<String,String> map=new HashMap<>();
         List<EmployeeModel> details= (List<EmployeeModel>) edao.employeeLogin(e.getUsername(),e.getPassword());
         if(details.size()==0){
@@ -85,6 +85,7 @@ public class EmployeeController {
         return map;
 
     }
+    @CrossOrigin(origins = "*")
     @PostMapping(path = "/employeeProfile", consumes = "application/json", produces = "application/json")
     public List<EmployeeModel> getEmployeeProfile(@RequestBody EmployeeModel e) {
         return (List<EmployeeModel>) edao.GetEmployeeProfile(e.getId());
